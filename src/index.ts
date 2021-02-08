@@ -26,8 +26,6 @@ createConnection({
 }).then(async connection => {
     // here you can start to work with your entities
 
-    // console.log("Here you can setup and run express/koa/any other framework.");
-
     // create a photo
     let photo = new Photo();
     photo.name = "Me and Bears";
@@ -43,19 +41,19 @@ createConnection({
     metadata.orientation = "portrait";
     metadata.compressed = true;
     metadata.comment = "cybershoot";
-    metadata.photo = photo; // this way we connect them
+    // metadata.photo = photo; // this way we connect them
+    photo.metadata = metadata;
 
-    // get entity repositories
+    // get repository
     let photoRepository = connection.getRepository(Photo);
-    let metadataRepository = connection.getRepository(PhotoMetadata);
 
-    // first we should save a photo
+    // saving a photo also save the metadata
+    // guarda la foto y tambien el metadata al estar en cascada
     await photoRepository.save(photo);
 
-    // photo is saved. Now we need to save a photo metadata
-    await metadataRepository.save(metadata);
+    console.log("Photo is saved, photo metadata is saved too.")
 
-    // done
-    console.log("Metadata is saved, and relation between metadata and photo is created in the database too");
-
+    // busca las fotos que tengan relacion con metadata
+    let photos = await photoRepository.find({ relations: ["metadata"] });
+    console.log(photos)
 }).catch(error => console.log(error));
