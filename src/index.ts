@@ -53,4 +53,15 @@ createConnection({
     await connection.manager.save(user);
     // const userRepository = connection.getRepository(User);
     // await userRepository.save(user);
+
+// With cascades enabled you can save this relation with only one save call.
+// To load a user with photos inside you must specify the relation in FindOptions:
+
+// const userRepository = connection.getRepository(User);
+// const users = await userRepository.find({ relations: ["photos"] });
+
+// or from inverse side
+
+// const photoRepository = connection.getRepository(Photo);
+// const photos = await photoRepository.find({ relations: ["user"] });
 }).catch(error => console.log(error));
