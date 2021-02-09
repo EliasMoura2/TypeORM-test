@@ -26,34 +26,31 @@ createConnection({
 }).then(async connection => {
     // here you can start to work with your entities
 
-    // create a photo
+    // create a photo one
     let photo = new Photo();
     photo.name = "Me and Bears";
     photo.description = "I am near polar bears";
     photo.filename = "photo-with-bears.jpg";
     photo.views = 1;
     photo.isPublished = true;
+    await connection.manager.save(photo);
 
-    // create a photo metadata
-    let metadata = new PhotoMetadata();
-    metadata.height = 640;
-    metadata.width = 480;
-    metadata.orientation = "portrait";
-    metadata.compressed = true;
-    metadata.comment = "cybershoot";
-    // metadata.photo = photo; // this way we connect them
-    photo.metadata = metadata;
+    // create a photo
+    let photo1 = new Photo();
+    photo1.name = "Me and my dog";
+    photo1.description = "I am with my dog";
+    photo1.filename = "photo-with-perry.jpg";
+    photo1.views = 1;
+    photo1.isPublished = true;
+    await connection.manager.save(photo1);
 
-    // get repository
-    let photoRepository = connection.getRepository(Photo);
-
-    // saving a photo also save the metadata
-    // guarda la foto y tambien el metadata al estar en cascada
-    await photoRepository.save(photo);
-
-    console.log("Photo is saved, photo metadata is saved too.")
-
-    // busca las fotos que tengan relacion con metadata
-    let photos = await photoRepository.find({ relations: ["metadata"] });
-    console.log(photos)
+    const user = new User();
+    user.firstName = "Elias";
+    user.lastName = "Moura";
+    user.age = 28;
+    user.isActive = true;
+    user.photos = [photo, photo1];
+    await connection.manager.save(user);
+    // const userRepository = connection.getRepository(User);
+    // await userRepository.save(user);
 }).catch(error => console.log(error));
